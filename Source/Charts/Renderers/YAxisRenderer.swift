@@ -302,32 +302,43 @@ open class YAxisRenderer: AxisRendererBase
             context.saveGState()
             defer { context.restoreGState() }
             
-            var clippingRect = viewPortHandler.contentRect
-            clippingRect.origin.y -= l.lineWidth / 2.0
-            clippingRect.size.height += l.lineWidth
-            context.clip(to: clippingRect)
+            // var clippingRect = viewPortHandler.contentRect
+            // clippingRect.origin.y -= l.lineWidth / 2.0
+            // clippingRect.size.height += l.lineWidth
+            // context.clip(to: clippingRect)
             
             position.x = 0.0
             position.y = CGFloat(l.limit)
             position = position.applying(trans)
             
             context.beginPath()
-            context.move(to: CGPoint(x: viewPortHandler.contentLeft, y: position.y))
-            context.addLine(to: CGPoint(x: viewPortHandler.contentRight, y: position.y))
+            // context.move(to: CGPoint(x: viewPortHandler.contentLeft, y: position.y))
+            // context.addLine(to: CGPoint(x: viewPortHandler.contentRight, y: position.y))
             
-            context.setStrokeColor(l.lineColor.cgColor)
+            // context.setStrokeColor(l.lineColor.cgColor)
             context.setLineWidth(l.lineWidth)
-            if l.lineDashLengths != nil
-            {
-                context.setLineDash(phase: l.lineDashPhase, lengths: l.lineDashLengths!)
-            }
-            else
-            {
-                context.setLineDash(phase: 0.0, lengths: [])
-            }
+            // if l.lineDashLengths != nil
+            // {
+            //     context.setLineDash(phase: l.lineDashPhase, lengths: l.lineDashLengths!)
+            // }
+            // else
+            // {
+            //     context.setLineDash(phase: 0.0, lengths: [])
+            // }
             
-            context.strokePath()
-            
+            // context.strokePath()
+
+            context.setFillColor(l.lineColor.cgColor)
+            context.setStrokeColor(UIColor.white.cgColor)
+
+            let rectWidth = viewPortHandler.contentRight - viewPortHandler.contentLeft
+            //let rectHeight = position
+            let rect = CGRect(x: viewPortHandler.contentLeft, y: position.y - (l.lineWidth + 2),
+                width: rectWidth, height: l.lineWidth + 1)
+            context.addRect(rect)
+
+            context.drawPath(using: .fillStroke)
+
             let label = l.label
             
             // if drawing the limit-value label is enabled
@@ -367,6 +378,66 @@ open class YAxisRenderer: AxisRendererBase
                             y: position.y - yOffset),
                         align: .left,
                         attributes: [NSAttributedString.Key.font: l.valueFont, NSAttributedString.Key.foregroundColor: l.valueTextColor])
+                }
+                else if l.labelPosition == .leftBox
+                {
+                    // LARANJA VOLUME
+                    let leftPos = viewPortHandler.contentLeft - 39 
+                    let topPos = position.y - 9
+                    let bottomPos = CGFloat(16.0)
+                    let rightPos = CGFloat(leftPos + 45) 
+                    
+                    context.beginPath()
+                    context.setFillColor(l.lineColor.cgColor)
+                    context.setStrokeColor(l.lineColor.cgColor)
+                    context.setLineWidth(l.lineWidth)
+                    let rect = CGRect(x: leftPos, y: topPos, width: rightPos, height: bottomPos)
+                    
+                    let clipPath: CGPath = UIBezierPath(roundedRect: rect, cornerRadius: 3.0).cgPath
+                    context.addPath(clipPath)
+                    context.closePath()
+                    context.fillPath()
+                    
+                    let textOffset = label.characters.count >= 5 ? (l.xOffset - 5) : l.xOffset
+                    ChartUtils.drawText(
+                        context: context,
+                        text: label,
+                        point: CGPoint(
+                            x: viewPortHandler.contentLeft - textOffset,
+                            y: topPos + 0.5
+                        ),
+                        align: .right,
+                        attributes: [NSFontAttributeName: yAxis.labelFont, NSForegroundColorAttributeName: l.valueTextColor]
+                    )
+                    
+                }
+                else if l.labelPosition == .rightBox
+                {
+                    let leftPos = viewPortHandler.contentRight
+                    let topPos = position.y - 9
+                    let bottomPos = CGFloat(16.0)
+                    let rightPos = CGFloat(42.0)
+                    
+                    context.beginPath()
+                    context.setFillColor(l.lineColor.cgColor)
+                    context.setStrokeColor(l.lineColor.cgColor)
+                    context.setLineWidth(l.lineWidth)
+                    let rect = CGRect(x: leftPos, y: topPos, width: rightPos, height: bottomPos)
+                    
+                    let clipPath: CGPath = UIBezierPath(roundedRect: rect, cornerRadius: 3.0).cgPath
+                    context.addPath(clipPath)
+                    context.closePath()
+                    context.fillPath()
+                    
+                    ChartUtils.drawText(context: context,
+                                        text: label,
+                                        point: CGPoint(
+                                            x: viewPortHandler.contentRight + 5,
+                                            y: topPos + 1),
+                                        align: .left,
+                                        attributes: [NSFontAttributeName: yAxis.labelFont, NSForegroundColorAttributeName: l.valueTextColor])
+                    
+                    
                 }
                 else
                 {

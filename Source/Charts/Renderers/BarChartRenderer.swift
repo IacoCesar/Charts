@@ -546,22 +546,42 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
                         
                         if dataSet.isDrawValuesEnabled
                         {
-                            drawValue(
-                                context: context,
-                                value: formatter.stringForValue(
-                                    val,
-                                    entry: e,
-                                    dataSetIndex: dataSetIndex,
-                                    viewPortHandler: viewPortHandler),
-                                xPos: x,
-                                yPos: val >= 0.0
-                                    ? (rect.origin.y + posOffset)
-                                    : (rect.origin.y + rect.size.height + negOffset),
-                                font: valueFont,
-                                align: .center,
-                                color: dataSet.valueTextColorAt(j))
-                        }
+                            // drawValue(
+                            //     context: context,
+                            //     value: formatter.stringForValue(
+                            //         val,
+                            //         entry: e,
+                            //         dataSetIndex: dataSetIndex,
+                            //         viewPortHandler: viewPortHandler),
+                            //     xPos: x,
+                            //     yPos: val >= 0.0
+                            //         ? (rect.origin.y + posOffset)
+                            //         : (rect.origin.y + rect.size.height + negOffset),
+                            //     font: valueFont,
+                            //     align: .center,
+                            //     color: dataSet.valueTextColorAt(j))
                         
+                        let fontSize = valueFont.pointSize + 4
+                        let font = NSUIFont(name: valueFont.fontName, size: fontSize)!
+                        let attr = [NSFontAttributeName: font, NSForegroundColorAttributeName: UIColor.white]
+                        let xPos = x
+                        let yPos = rect.origin.y + rect.size.height - 30
+                        //let xTranslate = (xPos + value.size(attributes: attr).width) / 2
+                        //let yTranslate = (yPos + value.size(attributes: attr).height) / 2
+                        let xTranslate = (xPos - 5)
+                        let yTranslate = (yPos + 5)
+
+                        context.saveGState()
+                        context.translateBy(x: xTranslate, y: yTranslate)
+                        context.rotate(by: CGFloat((M_PI * 90 * -1) / 180))
+                        
+                        (value as NSString).draw(at: CGPoint(x: 0, y: 0),
+                            withAttributes: attr)
+                            
+                        context.restoreGState()
+                        
+                        }
+
                         if let icon = e.icon, dataSet.isDrawIconsEnabled
                         {
                             var px = x
