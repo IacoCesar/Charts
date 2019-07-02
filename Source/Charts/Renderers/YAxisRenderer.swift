@@ -398,7 +398,7 @@ open class YAxisRenderer: AxisRendererBase
                     context.closePath()
                     context.fillPath()
                     
-                    let textOffset = label.characters.count >= 5 ? (l.xOffset - 5) : l.xOffset
+                    let textOffset = label.count >= 5 ? (l.xOffset - 5) : l.xOffset
                     ChartUtils.drawText(
                         context: context,
                         text: label,
@@ -435,7 +435,7 @@ open class YAxisRenderer: AxisRendererBase
                                             x: viewPortHandler.contentRight + 5,
                                             y: topPos + 1),
                                         align: .left,
-                                        attributes: [NSFontAttributeName: yAxis.labelFont, NSForegroundColorAttributeName: l.valueTextColor])
+                                        attributes: [NSAttributedString.Key.font: yAxis.labelFont, NSAttributedString.Key.foregroundColor: l.valueTextColor])
                     
                     
                 }

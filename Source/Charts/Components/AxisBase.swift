@@ -134,7 +134,7 @@ open class AxisBase: ComponentBase
         {
             let text = getFormattedLabel(i)
             
-            if longest.characters.count < text.characters.count
+            if longest.count < text.count
             {
                 longest = text
             }
@@ -155,10 +155,10 @@ open class AxisBase: ComponentBase
         
         let fmt = valueFormatter?.stringForValue(entries[index], axis: self) ?? ""
         
-        if vf.characters.count > 1
+        if vf.count > 1
         {
-            let firstChar = String(vf.characters.first!)
-            let secondChar = String(vf.characters.dropFirst().first!)
+            let firstChar = String(vf.first!)
+            let secondChar = String(vf.dropFirst().first!)
             
             if firstChar == "R" && secondChar == "$"
             {
@@ -175,7 +175,7 @@ open class AxisBase: ComponentBase
             if firstChar == "F" && secondChar == "|"
             {
                 let numberFormatter = NumberFormatter()
-                let digits = Int(String(vf.characters.dropFirst(2)))!
+                let digits = Int(String(vf.dropFirst(2)))!
                 numberFormatter.minimumIntegerDigits = 1
                 numberFormatter.maximumFractionDigits = digits
                 numberFormatter.minimumFractionDigits = digits
